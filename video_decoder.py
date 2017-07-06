@@ -8,15 +8,16 @@ import sys
 import pandas as pd
 import os
 import csv
+import argparse
 
 # units are frames/second
 VIDEO_RECORDING_FREQUENCY = 120
 
 ##
-# This function takes a video and converts it (using system commands) to a CSV file in our current directory
+# This function takes a video and grabs all the individual frames from it
 #
-# @input video_name - the name of the video file we want to convert
-def create_CSV_from_video(video_name):
+# @input video_name - the name of the video file we want to get frames from
+def get_frames_from_video(video_name):
     ##
     # This is a range (from a pixel 150 from the left and 200 from the top,
     # to 990 from the left and 500 from the top) that should be able to
@@ -37,9 +38,6 @@ def create_CSV_from_video(video_name):
     # Note that we assume the contrast is sufficiently high so that we can better distinguish asterisks from their background
     # (this can be accomplished with external video editors, if necessary)
     os.system("ffmpeg -i " + video_name + " -an -vf crop=" + frame_cropper_range + ",eq=contrast=10 images/" + image_name_template + ".png") 
-
-    # And convert the frames into a large CSV file for processing
-    os.system("ffprobe -f lavfi -i movie=" + video_name + " -show_frames -show_entries frame=pkt_pts_time -of csv=p=0 > frames.csv")
 
 ##
 # This function checks if the image we are looking at is actually a PIN entry screen at all
@@ -74,6 +72,29 @@ def is_asterisk_present(image, coord):
     r, g, b = image.getpixel(coord)
     
     return is_color_black(r, g, b)
+
+##
+# This function checks at specified locations to determine if an asterisk is present there
+#
+# @input image - the image we want to check if an asterisk has appeared inside of
+# @input coord_topleft - the top left corner of the box we are checking
+# @input coord_bottomright - the bottom right corner of the box we are checking
+# @input threshold - what percentage of pixels should be black to determine that an asterisk has appeared
+# @returns whether or not an asterisk has appeared at the specified location
+def is_asterisk_present_in_area(image, coord_topleft, coord_bottomright, threshold=0.7):
+    total_pixels = 0
+    num_black_pixels = 0
+
+    # range through our box and check for black pixels
+    for x in range(coord_topleft[0], coord_bottomright[0] + 1):
+        for y in range(coord_topleft[1], coord_bottomright[1] + 1):
+            curr = (x,y)
+            r, g, b = image.getpixel(curr)
+            if is_color_black(r, g, b):
+                num_black_pixels += 1
+            total_pixels += 1
+
+    return (float(num_black_pixels) / total_pixels) >= threshold
 
 ##
 # This function runs through every frame we collected and checks if asterisks have appeared in each
@@ -183,13 +204,21 @@ def obtain_timing_sequences(asterisk_appearances):
     list_of_all_pin_entries = [[float(x * (10 ** 6)) / VIDEO_RECORDING_FREQUENCY for x in sublist] for sublist in list_of_all_pin_entries]
     return list_of_all_pin_entries
 
-def main():
-    create_CSV_from_video("[insert.mp4 here]")
+def main(args):
+    get_frames_from_video(args.video_file)
     asterisk_appearances = find_asterisk_appearances()
     pin_entries = obtain_timing_sequences(asterisk_appearances)
 
     print "Timings between keystrokes in microseconds:"
     for single_pin in pin_entries:
-        print ", ".join(single_pin)
+        printable = [str(x) for x in single_pin]
+        print ", ".join(printable)
 
-main()
+# python video_decoder.py <video_file>
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Process videos for timing data')
+    parser.add_argument('video_file', help='the video file')
+    
+    args = parser.parse_args()
+    
+    main(args)
