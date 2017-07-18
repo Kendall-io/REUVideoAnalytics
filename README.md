@@ -32,7 +32,7 @@ cropImage = '[Crop size and area]'
 
 ## History
 Update: July 18, 2017 9:17 AM<br>
-- Formatting changes
+- Formatting changes<br>
 Update: July 17,2017 12:56 AM<br>
 - Added usability for the user through jupyter-notebook<br>
 Uploaded: July 5, 2017 12:04 AM
