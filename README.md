@@ -17,22 +17,40 @@ The process is somewhat long due to making several .csv files and .txt files. Th
 Python<br>Anaconda<br>Jupyter-Notebook<br>FFMPEG<br>OpenCV
 
 ## Usage
-### More information can be found in documentation
+### Part 1 of VideoProcess_Part1.ipynb
+Extracting the frames of a given video at a specific FPS. The only variables that need to be implemented and changed is:<br>
+- startTime
+	- Start video from a certain time-frame 00:00:00.000 (hours,minutes,seconds,milliseconds), user-determined
+- videoFileName
+- videoFileExtension
+- contrastVal
+	- Numerical value which changes the contrast of the extracted images of the video
+- brightnessVal
+	- Numerical value which changes the brightness of the extracted images of the video, used for videos that are too 'dark'
+- cropImage
+	- Dimensions of the extracted image. [x,y,z,w] | [x,y] is the image size, and [z,w] is the coordinate on the image where it will start creating. The specific values that was used for the REU was [55:120:1245:445]
+- rotateImage
+	- The specific values that was used fro the REU was '-10*PI/180'
 ```python
-startTime = '[Insert start time here]'
-videoFileName = '[Enter video name here, do not include the extension]'
-videoFileExtension = '[Enter video extension here]'
+startTime = 'Insert start time here'
+videoFileName = 'Enter video name here, do not include the extension'
+videoFileExtension = 'Enter video extension here'
 videoToBeProcessed = videoFileName + videoFileExtension
 imageFileSaveArea = 'images' + videoFileName
 frameFileName = 'frames' + videoFileName + '.csv'
-contrastVal = '[Enter contrast value]'
-brightnessVal = '[Enter brightness value]'
-cropImage = '[Crop size and area]'
-rotateImage = '[How much it is being rotated]'
+contrastVal = 'Enter contrast value'
+brightnessVal = 'Enter brightness value'
+cropImage = 'Crop size and area'
+rotateImage = 'How much it is being rotated'
 ```
 
-## In part2.ipynb
-This is for debugging purposes for the user to see what the image being analyzed, looks like.
+## Part 2 of VideoProcess_Part2.ipynb
+```python
+videoFileName = 'Input video file name that was just processed here'
+```
+<br>
+
+This is for debugging purposes for the user to see what the image looks like after analyzation
 ```python
 ###
 # This is used for debugging purposes to see how the image is like after contours are drawn
