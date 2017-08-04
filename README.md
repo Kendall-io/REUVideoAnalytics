@@ -1,5 +1,5 @@
 # REUVideoAnalytics
-### A project by Kendall Molas, Tristan Gurtler, Lynn Wu, Charissa Miller for REU NYIT 2017
+### A project by Kendall Molas, Denisolt Shakhbulatov, Tristan Gurtler, Lynn Wu, Charissa Miller for REU NYIT 2017
 The purpose of making this program is to analyze when asterisks appeared and disappeared in our video recordings by getting the timestamps of these appearances and disappearances.<br>
 
 The process is somewhat long due to making several .csv files and .txt files. The .csv files that are made when using this code is:
